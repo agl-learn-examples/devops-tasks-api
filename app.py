@@ -25,8 +25,8 @@ def list_tasks():
 def create_task():
     data = request.get_json(silent=True) or {}
     title = (data.get("title") or "").strip()
-    if title is None:
-        return {"error": "a title is required"}, 400
+    if not title:
+        return {"error": "title is required"}, 400
     with db() as con:
         cur = con.execute("INSERT INTO tasks (title) VALUES (?)", (title,))
     task = {"id": cur.lastrowid, "title": title, "done": False}
