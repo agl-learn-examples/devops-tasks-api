@@ -13,6 +13,10 @@ def db():
 def as_dict(r):
     return {"id": r["id"], "title": r["title"], "done": bool(r["done"]), "priority": r["priority"]}
 
+def priority_of(data):
+    p = data.get("priority", "normal")
+    return p if p in PRIORITIES else None
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -30,8 +34,8 @@ def create_task():
     data = request.get_json(silent=True) or {}
     if not data.get("title"):
         return {"error": "title is required"}, 400
-    priority = data.get("priority", "normal")
-    if priority not in PRIORITIES:
+    priority = priority_of(data)
+    if priority is None:
         return {"error": "priority must be low, normal or high"}, 400
     with db() as con:
         cur = con.execute("INSERT INTO tasks (title, priority) VALUES (?, ?)", (data["title"], priority))
@@ -49,12 +53,15 @@ def replace_task(task_id):
     data = request.get_json(silent=True) or {}
     if not data.get("title"):
         return {"error": "title is required"}, 400
+    priority = priority_of(data)
+    if priority is None:
+        return {"error": "priority must be low, normal or high"}, 400
     with db() as con:
-        cur = con.execute("UPDATE tasks SET title = ?, done = ? WHERE id = ?",
-                          (data["title"], int(bool(data.get("done"))), task_id))
+        cur = con.execute("UPDATE tasks SET title = ?, done = ?, priority = ? WHERE id = ?",
+                          (data["title"], int(bool(data.get("done"))), priority, task_id))
     if cur.rowcount == 0:
         return {"error": "not found"}, 404
-    return {"id": task_id, "title": data["title"], "done": bool(data.get("done"))}
+    return {"id": task_id, "title": data["title"], "done": bool(data.get("done")), "priority": priority}
 
 @app.delete("/tasks/<int:task_id>")
 def delete_task(task_id):
