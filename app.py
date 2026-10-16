@@ -21,8 +21,9 @@ def health():
 def list_tasks():
     done = request.args.get("done")
     where, args = (" WHERE done = ?", (int(done == "true"),)) if done else ("", ())
+    order = " ORDER BY title" if request.args.get("sort") == "title" else ""
     with db() as con:
-        return [as_dict(r) for r in con.execute("SELECT * FROM tasks" + where, args)]
+        return [as_dict(r) for r in con.execute("SELECT * FROM tasks" + where + order, args)]
 
 @app.post("/tasks")
 def create_task():

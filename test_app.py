@@ -20,6 +20,12 @@ def test_create_and_list(client):
     assert client.get("/tasks").get_json() == [{"id": 1, "title": "learn HTTP", "done": False, "priority": "normal"}]
 
 
+def test_sort_by_title(client):
+    for title in ("tag a release", "fetch", "open a PR"):
+        client.post("/tasks", json={"title": title})
+    assert [t["title"] for t in client.get("/tasks?sort=title").get_json()] == ["fetch", "open a PR", "tag a release"]
+
+
 def test_title_required(client):
     assert client.post("/tasks", json={}).status_code == 400
 
