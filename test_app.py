@@ -22,3 +22,7 @@ def test_create_and_list(client):
 
 def test_title_required(client):
     assert client.post("/tasks", json={}).status_code == 400
+
+
+def test_missing_task_is_404(client):
+    assert client.get("/tasks/99").status_code == 404
