@@ -18,8 +18,10 @@ def health():
 
 @app.get("/tasks")
 def list_tasks():
+    done = request.args.get("done")
+    where, args = (" WHERE done = ?", (int(done == "true"),)) if done else ("", ())
     with db() as con:
-        return [as_dict(r) for r in con.execute("SELECT * FROM tasks")]
+        return [as_dict(r) for r in con.execute("SELECT * FROM tasks" + where, args)]
 
 @app.post("/tasks")
 def create_task():

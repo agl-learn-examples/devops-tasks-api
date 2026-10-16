@@ -22,3 +22,11 @@ def test_create_and_list(client):
 
 def test_title_required(client):
     assert client.post("/tasks", json={}).status_code == 400
+
+
+def test_filter_by_done(client):
+    client.post("/tasks", json={"title": "write tests"})
+    client.put("/tasks/1", json={"title": "write tests", "done": True})
+    client.post("/tasks", json={"title": "open a PR"})
+    assert [t["title"] for t in client.get("/tasks?done=true").get_json()] == ["write tests"]
+    assert [t["title"] for t in client.get("/tasks?done=false").get_json()] == ["open a PR"]
