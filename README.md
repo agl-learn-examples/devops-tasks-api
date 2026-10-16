@@ -26,7 +26,7 @@ Stop the server with Ctrl+C.
 |---|---|---|
 | GET | /health | `{"status": "ok"}` |
 | GET | /tasks | list tasks |
-| POST | /tasks | create a task: `{"title": "..."}` → 201 |
+| POST | /tasks | create a task: `{"title": "..."}` → 201, or 400 with no title |
 | GET | /tasks/&lt;id&gt; | one task, or 404 |
 | PUT | /tasks/&lt;id&gt; | replace a task |
 | DELETE | /tasks/&lt;id&gt; | delete a task → 204 |
