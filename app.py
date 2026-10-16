@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, request
 
 app = Flask(__name__)
+PRIORITIES = ("low", "normal", "high")
 
 def db():
     con = sqlite3.connect("tasks.db")
@@ -29,6 +30,8 @@ def create_task():
     if not data.get("title"):
         return {"error": "title is required"}, 400
     priority = data.get("priority", "normal")
+    if priority not in PRIORITIES:
+        return {"error": "priority must be low, normal or high"}, 400
     with db() as con:
         cur = con.execute("INSERT INTO tasks (title, priority) VALUES (?, ?)", (data["title"], priority))
     task = {"id": cur.lastrowid, "title": data["title"], "done": False, "priority": priority}

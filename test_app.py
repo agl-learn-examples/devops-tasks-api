@@ -36,3 +36,8 @@ def test_priority(client):
     r = client.post("/tasks", json={"title": "ship it", "priority": "high"})
     assert r.status_code == 201
     assert r.get_json()["priority"] == "high"
+
+
+def test_unknown_priority(client):
+    r = client.post("/tasks", json={"title": "ship it", "priority": "urgent"})
+    assert r.status_code == 400
