@@ -28,7 +28,7 @@ Stop the server with Ctrl+C.
 | GET | /tasks | list tasks |
 | POST | /tasks | create a task: `{"title": "...", "priority": "high"}` → 201 (priority: low, normal or high; default normal) |
 | GET | /tasks/&lt;id&gt; | one task, or 404 |
-| PUT | /tasks/&lt;id&gt; | replace a task |
+| PUT | /tasks/&lt;id&gt; | replace a task, priority included |
 | DELETE | /tasks/&lt;id&gt; | delete a task → 204 |
 
 ## Tests
