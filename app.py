@@ -23,8 +23,8 @@ def list_tasks():
 
 @app.post("/tasks")
 def create_task():
-    data = request.get_json(silent=True) or {}
-    if not data.get("title"):
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or not data.get("title"):
         return {"error": "title is required"}, 400
     with db() as con:
         cur = con.execute("INSERT INTO tasks (title) VALUES (?)", (data["title"],))
@@ -39,8 +39,8 @@ def get_task(task_id):
 
 @app.put("/tasks/<int:task_id>")
 def replace_task(task_id):
-    data = request.get_json(silent=True) or {}
-    if not data.get("title"):
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or not data.get("title"):
         return {"error": "title is required"}, 400
     with db() as con:
         cur = con.execute("UPDATE tasks SET title = ?, done = ? WHERE id = ?",
