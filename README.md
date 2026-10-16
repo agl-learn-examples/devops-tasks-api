@@ -17,6 +17,7 @@ A tiny to-do list REST API in Python and Flask. It is the running example for th
 Then, in a second terminal:
 
     curl localhost:5000/health
+    curl -X POST localhost:5000/tasks -H 'Content-Type: application/json' -d '{"title": "learn Git"}'
 
 Stop the server with Ctrl+C.
 
