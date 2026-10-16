@@ -22,3 +22,7 @@ def test_create_and_list(client):
 
 def test_title_required(client):
     assert client.post("/tasks", json={}).status_code == 400
+
+
+def test_body_must_be_an_object(client):
+    assert client.post("/tasks", json=["buy milk"]).status_code == 400
