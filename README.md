@@ -29,3 +29,7 @@ Then, in a second terminal:
     pytest
 
 Tasks are stored in `tasks.db` (SQLite) next to `app.py`.
+
+## Errors
+
+Errors come back as JSON: `{"error": "..."}` with 400 (bad input) or 404 (no such task).
