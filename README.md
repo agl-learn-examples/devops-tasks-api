@@ -34,6 +34,8 @@ Stop the server with Ctrl+C.
 
 ## Tests
 
+Run them before every push:
+
     pytest
 
 Run the tests inside the virtual environment, after `pip install`.
