@@ -26,3 +26,8 @@ def test_title_required(client):
 
 def test_missing_task_is_404(client):
     assert client.get("/tasks/99").status_code == 404
+
+
+def test_delete_is_204(client):
+    client.post("/tasks", json={"title": "x"})
+    assert client.delete("/tasks/1").status_code == 204
