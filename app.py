@@ -24,11 +24,12 @@ def list_tasks():
 @app.post("/tasks")
 def create_task():
     data = request.get_json(silent=True) or {}
-    if not data.get("title"):
+    title = (data.get("title") or "").strip()
+    if not title:
         return {"error": "title is required"}, 400
     with db() as con:
-        cur = con.execute("INSERT INTO tasks (title) VALUES (?)", (data["title"],))
-    task = {"id": cur.lastrowid, "title": data["title"], "done": False}
+        cur = con.execute("INSERT INTO tasks (title) VALUES (?)", (title,))
+    task = {"id": cur.lastrowid, "title": title, "done": False}
     return task, 201, {"Location": f"/tasks/{task['id']}"}
 
 @app.get("/tasks/<int:task_id>")
