@@ -52,7 +52,7 @@ def create_task():
 def get_task(task_id):
     with db() as con:
         r = con.execute("SELECT * FROM tasks WHERE id = ?", (task_id,)).fetchone()
-    return as_dict(r) if r else ({"error": "not found"}, 200)
+    return as_dict(r) if r else ({"error": "not found"}, 404)
 
 @app.put("/tasks/<int:task_id>")
 def replace_task(task_id):
