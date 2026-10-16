@@ -17,7 +17,7 @@ def test_health(client):
 def test_create_and_list(client):
     r = client.post("/tasks", json={"title": "learn HTTP"})
     assert r.status_code == 201
-    assert client.get("/tasks").get_json() == [{"id": 1, "title": "learn HTTP", "done": False}]
+    assert client.get("/tasks").get_json() == [{"id": 1, "title": "learn HTTP", "done": False, "priority": "normal"}]
 
 
 def test_title_required(client):
@@ -30,3 +30,9 @@ def test_filter_by_done(client):
     client.post("/tasks", json={"title": "open a PR"})
     assert [t["title"] for t in client.get("/tasks?done=true").get_json()] == ["write tests"]
     assert [t["title"] for t in client.get("/tasks?done=false").get_json()] == ["open a PR"]
+
+
+def test_priority(client):
+    r = client.post("/tasks", json={"title": "ship it", "priority": "high"})
+    assert r.status_code == 201
+    assert r.get_json()["priority"] == "high"

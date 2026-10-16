@@ -6,11 +6,11 @@ app = Flask(__name__)
 def db():
     con = sqlite3.connect("tasks.db")
     con.row_factory = sqlite3.Row
-    con.execute("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, title TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0)")
+    con.execute("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, title TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0, priority TEXT NOT NULL DEFAULT 'normal')")
     return con
 
 def as_dict(r):
-    return {"id": r["id"], "title": r["title"], "done": bool(r["done"])}
+    return {"id": r["id"], "title": r["title"], "done": bool(r["done"]), "priority": r["priority"]}
 
 @app.get("/health")
 def health():
@@ -28,9 +28,10 @@ def create_task():
     data = request.get_json(silent=True) or {}
     if not data.get("title"):
         return {"error": "title is required"}, 400
+    priority = data.get("priority", "normal")
     with db() as con:
-        cur = con.execute("INSERT INTO tasks (title) VALUES (?)", (data["title"],))
-    task = {"id": cur.lastrowid, "title": data["title"], "done": False}
+        cur = con.execute("INSERT INTO tasks (title, priority) VALUES (?, ?)", (data["title"], priority))
+    task = {"id": cur.lastrowid, "title": data["title"], "done": False, "priority": priority}
     return task, 201, {"Location": f"/tasks/{task['id']}"}
 
 @app.get("/tasks/<int:task_id>")
